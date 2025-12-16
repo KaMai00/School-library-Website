@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
     <link rel="stylesheet" href="../functions/style.css">
     <title>TFS-Waxenberg Bibliothek</title>
 </head>
+
 <body>
-    
+
     <div class="header">
         <div id="logo">
             <a href="main.html"><img src="../functions/images/..." alt="logo" /></a>
@@ -27,18 +29,24 @@
             <button>Suchen</button>
         </div>
 
+        <?php
+        $book = "";
+        $author = "";
+        $releasedate = "";
 
-        <div class="books">
-            <div class="book">
-                <img src="../functions/images/..." alt="book-cover">
-                <div class="book-info">
-                    <h3>Buchtitel</h3>
-                    <p>Autor: Max Mustermann</p>
-                    <p>Veröffentlicht: 2020</p>
-                    <button>Mehr erfahren</button>
+        echo '
+            <div class="books">
+                <div class="book">
+                    <img src="../functions/images/..." alt="book-cover">
+                    <div class="book-info">
+                        <h3>' . $book . '</h3>
+                        <p>Autor: ' . $author . '</p>
+                        <p>Veröffentlicht: ' . $releasedate . '</p>
+                        <button>Mehr erfahren</button>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div>';
+        ?>
     </main>
 
 
@@ -50,4 +58,5 @@
         </div>
     </footer>
 </body>
+
 </html>
