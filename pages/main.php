@@ -30,9 +30,9 @@
         </div>
 
         <?php
-        $book = "";
-        $author = "";
-        $releasedate = "";
+        $book = "1984";
+        $kategorie = "kategorie";
+        $beschreibung = "Big Brother is watching you.";
 
         echo '
             <div class="books">
@@ -40,8 +40,8 @@
                     <img src="../functions/images/..." alt="book-cover">
                     <div class="book-info">
                         <h3>' . $book . '</h3>
-                        <p>Autor: ' . $author . '</p>
-                        <p>Veröffentlicht: ' . $releasedate . '</p>
+                        <p>Kategorie: ' . $kategorie . '</p>
+                        <p>Beschreibung: ' . $beschreibung . '</p>
                         <button>Mehr erfahren</button>
                     </div>
                 </div>
