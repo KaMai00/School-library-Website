@@ -25,27 +25,45 @@
 
     <main>
         <div class="search">
-            <input type="text" placeholder="Buch suchen...">
-            <button>Suchen</button>
+            <form method="get" action="main.php">
+                <input type="text" name="q" placeholder="Buch suchen..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
+                <button type="submit">Suchen</button>
+            </form>
         </div>
 
         <?php
-        $book = "1984";
-        $kategorie = "kategorie";
-        $beschreibung = "Big Brother is watching you.";
+        session_start();
+        require __DIR__ . '/../functions/db.php';
 
-        echo '
-            <div class="books">
-                <div class="book">
-                    <img src="../functions/images/..." alt="book-cover">
-                    <div class="book-info">
-                        <h3>' . $book . '</h3>
-                        <p>Kategorie: ' . $kategorie . '</p>
-                        <p>Beschreibung: ' . $beschreibung . '</p>
-                        <button>Mehr erfahren</button>
-                    </div>
-                </div>
-            </div>';
+        $q = trim((string)($_GET['q'] ?? ''));
+        if ($q !== '') {
+            $term = '%' . $q . '%';
+            // Search in titel, isbn, kategorie, verlag, beschreibung
+            $stmt = $pdo->prepare('SELECT * FROM buecher WHERE titel LIKE :t OR isbn LIKE :t OR kategorie LIKE :t OR verlag LIKE :t OR beschreibung LIKE :t ORDER BY titel');
+            $stmt->execute([':t' => $term]);
+            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $stmt = $pdo->query('SELECT * FROM buecher ORDER BY titel LIMIT 50');
+            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        if (!$books) {
+            echo '<p>Keine Ergebnisse gefunden.</p>';
+        } else {
+            echo '<div class="books">';
+            foreach ($books as $b) {
+                echo '<div class="book">';
+                echo '<img src="../functions/images/..." alt="book-cover">';
+                echo '<div class="book-info">';
+                echo '<h3>' . htmlspecialchars($b['titel']) . '</h3>';
+                echo '<p>Verlag: ' . htmlspecialchars($b['verlag'] ?? '') . '</p>';
+                echo '<p>Kategorie: ' . htmlspecialchars($b['kategorie'] ?? '') . '</p>';
+                echo '<p>Beschreibung: ' . htmlspecialchars($b['beschreibung'] ?? '') . '</p>';
+                echo '<p>ISBN: ' . htmlspecialchars($b['isbn']) . '</p>';
+                echo '</div></div>';
+            }
+            echo '</div>';
+        }
         ?>
     </main>
 
