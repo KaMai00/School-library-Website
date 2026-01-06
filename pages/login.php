@@ -10,18 +10,18 @@
   <body>
     <div class="header">
       <div id="logo">
-        <a href="main.html"><img src="../functions/images/..." alt="logo" /></a>
+        <a href="main.php"><img src="../functions/images/..." alt="logo" /></a>
       </div>
       <div id="title">Login</div>
       <div class="menu">
-        <button><a href="admin.html">Verwaltung</a></button>
-        <button><a href="main.html">Home</a></button>
+        <button><a href="admin.php">Verwaltung</a></button>
+        <button><a href="main.php">Home</a></button>
       </div>
     </div>
 
     <main>
         <div class="login-form"></div>
-            <form action="login.html" method="post">
+            <form action="login.php" method="post">
             <h2>Login</h2>
             <p>für Bibliothekare</p>
             <label for="username">Benutzername:</label>
@@ -38,8 +38,8 @@
     <footer>
       <p>© 2025 TFS-Waxenberg Bibliothek. Alle Rechte vorbehalten.</p>
       <div class="menu">
-        <button><a href="subpages/security-notice.html">Datenschutz</a></button>
-        <button><a href="subpages/impressum.html">impressum</a></button>
+        <button><a href="subpages/security-notice.php">Datenschutz</a></button>
+        <button><a href="subpages/impressum.php">impressum</a></button>
       </div>
     </footer>
   </body>

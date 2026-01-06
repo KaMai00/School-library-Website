@@ -13,12 +13,12 @@
 
     <div class="header">
         <div id="logo">
-            <a href="main.html"><img src="../functions/images/..." alt="logo" /></a>
+            <a href="main.php"><img src="../functions/images/..." alt="logo" /></a>
         </div>
         <div id="title">Willkommen zu Bibliotheks Website</div>
         <div class="menu">
-            <button><a href="admin.html">Verwaltung</a></button>
-            <button><a href="login.html">Login</a></button>
+            <button><a href="admin.php">Verwaltung</a></button>
+            <button><a href="login.php">Login</a></button>
         </div>
     </div>
 
@@ -53,8 +53,8 @@
     <footer>
         <p>© 2025 TFS-Waxenberg Bibliothek. Alle Rechte vorbehalten.</p>
         <div class="menu">
-            <button><a href="subpages/security-notice.html">Datenschutz</a></button>
-            <button><a href="subpages/impressum.html">impressum</a></button>
+            <button><a href="subpages/security-notice.php">Datenschutz</a></button>
+            <button><a href="subpages/impressum.php">impressum</a></button>
         </div>
     </footer>
 </body>

@@ -10,11 +10,11 @@
   <body>
     <div class="header">
       <div id="logo">
-        <a href="main.html"><img src="../functions/images/..." alt="logo" /></a>
+        <a href="main.php"><img src="../functions/images/..." alt="logo" /></a>
       </div>
       <div id="title">Verwaltung</div>
       <div class="menu">
-        <button><a href="admin.html">Verwaltung</a></button>
+        <button><a href="admin.php">Verwaltung</a></button>
         <button><a href="main.php">Home</a></button>
       </div>
     </div>
@@ -29,7 +29,7 @@
 
       <div class="manageReader">
         <h3>Leser verwalten</h3>
-        <form action="admin.html" method="post">
+        <form action="admin.php" method="post">
           <label for="leserID">Leser-ID:</label>
           <input type="text" id="leserID" name="leserID" />
           <br />
@@ -48,7 +48,7 @@
 
       <div class="manageBooks">
         <h3>Bücher verwalten</h3>
-        <form action="admin.html" method="post">
+        <form action="admin.php" method="post">
           <label for="buchID">Buch-ID:</label>
           <input type="text" id="buchID" name="buchID" />
           <br />
@@ -78,8 +78,8 @@
     <footer>
       <p>© 2025 TFS-Waxenberg Bibliothek. Alle Rechte vorbehalten.</p>
       <div class="menu">
-        <button><a href="subpages/security-notice.html">Datenschutz</a></button>
-        <button><a href="subpages/impressum.html">impressum</a></button>
+        <button><a href="subpages/security-notice.php">Datenschutz</a></button>
+        <button><a href="subpages/impressum.php">impressum</a></button>
       </div>
     </footer>
   </body>
