@@ -4,12 +4,12 @@
 // require __DIR__ . '/db.php'; then use $pdo
 
 // Read configuration from environment variables (if set)
-$driver = getenv('DB_DRIVER') ?: 'sqlite'; // 'sqlite', 'mysql', or 'pgsql'
+$driver = getenv('DB_DRIVER') ?: 'sqlite';
 $dbPath = getenv('DB_PATH') ?: __DIR__ . '/../data/library.db';
 $host = getenv('DB_HOST') ?: '127.0.0.1';
-$port = getenv('DB_PORT') ?: '';
-$dbName = getenv('DB_NAME') ?: '';
-$user = getenv('DB_USER') ?: '';
+$port = getenv('DB_PORT') ?: '3360';
+$dbName = getenv('DB_NAME') ?: 'mtsp_bibliothek';
+$user = getenv('DB_USER') ?: 'root';
 $pass = getenv('DB_PASS') ?: '';
 $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
 
