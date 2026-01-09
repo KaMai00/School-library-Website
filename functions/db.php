@@ -10,7 +10,7 @@ $host = getenv('DB_HOST') ?: '127.0.0.1';
 $port = getenv('DB_PORT') ?: '3360';
 $dbName = getenv('DB_NAME') ?: 'mtsp_bibliothek';
 $user = getenv('DB_USER') ?: 'root';
-$pass = getenv('DB_PASS') ?: '';
+$pass = getenv('DB_PASS') ?: '10032008';
 $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
 
 try {
