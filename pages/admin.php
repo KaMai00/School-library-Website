@@ -82,11 +82,44 @@
         }
         header('Location: admin.php'); exit;
       }
+      // Borrowing (Ausleihe) actions
+      if ($action === 'add_ausleihe') {
+        $ins = $pdo->prepare('INSERT INTO ausleihen (buch_id, leser_id, bibliothekar_id, ausleihdatum, rueckgabedatum_soll, status) VALUES (:b, :l, :bib, :ausleihdatum, :rueckgabedatum_soll, :status)');
+        $ins->execute([
+          ':b' => (int)($_POST['buch_id'] ?? 0),
+          ':l' => (int)($_POST['leser_id'] ?? 0),
+          ':bib' => $_SESSION['user']['id'],
+          ':ausleihdatum' => $_POST['ausleihdatum'] ?? date('Y-m-d'),
+          ':rueckgabedatum_soll' => $_POST['rueckgabedatum_soll'] ?? null,
+          ':status' => $_POST['status'] ?? 'ausgeliehen'
+        ]);
+        header('Location: admin.php'); exit;
+      }
+      if ($action === 'update_ausleihe' && !empty($_POST['ausleihe_id'])) {
+        $up = $pdo->prepare('UPDATE ausleihen SET buch_id=:b, leser_id=:l, ausleihdatum=:ausleihdatum, rueckgabedatum_soll=:rueckgabedatum_soll, rueckgabedatum_ist=:rueckgabedatum_ist, status=:status WHERE ausleihe_id=:id');
+        $up->execute([
+          ':b' => (int)($_POST['buch_id'] ?? 0),
+          ':l' => (int)($_POST['leser_id'] ?? 0),
+          ':ausleihdatum' => $_POST['ausleihdatum'] ?? '',
+          ':rueckgabedatum_soll' => $_POST['rueckgabedatum_soll'] ?? null,
+          ':rueckgabedatum_ist' => $_POST['rueckgabedatum_ist'] ?? null,
+          ':status' => $_POST['status'] ?? 'ausgeliehen',
+          ':id' => (int)$_POST['ausleihe_id']
+        ]);
+        header('Location: admin.php'); exit;
+      }
+      if ($action === 'delete_ausleihe' && !empty($_POST['ausleihe_id'])) {
+        $del = $pdo->prepare('DELETE FROM ausleihen WHERE ausleihe_id = :id');
+        $del->execute([':id' => (int)$_POST['ausleihe_id']]);
+        header('Location: admin.php'); exit;
+      }
     }
 
-    // Fetch librarians and books for display using existing schema
+    // Fetch librarians, books, readers, and borrowings for display
     $users = $pdo->query('SELECT bibliothekar_id, vorname, nachname, email, benutzername, aktiv FROM bibliothekare ORDER BY benutzername')->fetchAll(PDO::FETCH_ASSOC);
     $books = $pdo->query('SELECT * FROM buecher ORDER BY titel')->fetchAll(PDO::FETCH_ASSOC);
+    $readers = $pdo->query('SELECT leser_id, vorname, nachname FROM leser ORDER BY vorname, nachname')->fetchAll(PDO::FETCH_ASSOC);
+    $ausleihen = $pdo->query('SELECT a.*, b.titel as buch_titel, l.vorname as leser_vorname, l.nachname as leser_nachname FROM ausleihen a JOIN buecher b ON a.buch_id = b.buch_id JOIN leser l ON a.leser_id = l.leser_id ORDER BY a.ausleihdatum DESC')->fetchAll(PDO::FETCH_ASSOC);
 
     ?>
 
@@ -164,6 +197,67 @@
               <input type="hidden" name="action" value="delete_user">
               <input type="hidden" name="user_id" value="<?php echo (int)$u['id']; ?>">
               <button type="submit" onclick="return confirm('Benutzer löschen?')">Löschen</button>
+            </form>
+          </div>
+        <?php endforeach; ?>
+      </section>
+
+      <section class="manageBorrowings">
+        <h3>Ausleihe hinzufügen</h3>
+        <form action="admin.php" method="post">
+          <input type="hidden" name="action" value="add_ausleihe">
+          <label>Buch: <select name="buch_id" required>
+            <option value="">-- Buch wählen --</option>
+            <?php foreach ($books as $b): ?>
+              <option value="<?php echo (int)$b['buch_id']; ?>"><?php echo htmlspecialchars($b['titel']); ?></option>
+            <?php endforeach; ?>
+          </select></label><br>
+          <label>Leser: <select name="leser_id" required>
+            <option value="">-- Leser wählen --</option>
+            <?php foreach ($readers as $r): ?>
+              <option value="<?php echo (int)$r['leser_id']; ?>"><?php echo htmlspecialchars($r['vorname'] . ' ' . $r['nachname']); ?></option>
+            <?php endforeach; ?>
+          </select></label><br>
+          <label>Ausleihdatum: <input type="date" name="ausleihdatum" value="<?php echo date('Y-m-d'); ?>" required></label><br>
+          <label>Rückgabedatum (erwartet): <input type="date" name="rueckgabedatum_soll"></label><br>
+          <label>Status: <select name="status">
+            <option value="ausgeliehen">ausgeliehen</option>
+            <option value="zurückgegeben">zurückgegeben</option>
+            <option value="überfällig">überfällig</option>
+          </select></label><br>
+          <button type="submit">Ausleihe erstellen</button>
+        </form>
+
+        <h4>Bestehende Ausleihen</h4>
+        <?php foreach ($ausleihen as $a): ?>
+          <div style="border:1px solid #ccc;padding:8px;margin:6px 0;">
+            <form method="post" action="admin.php">
+              <input type="hidden" name="action" value="update_ausleihe">
+              <input type="hidden" name="ausleihe_id" value="<?php echo (int)$a['ausleihe_id']; ?>">
+              <label>Buch: <select name="buch_id">
+                <?php foreach ($books as $b): ?>
+                  <option value="<?php echo (int)$b['buch_id']; ?>" <?php echo $b['buch_id'] == $a['buch_id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($b['titel']); ?></option>
+                <?php endforeach; ?>
+              </select></label><br>
+              <label>Leser: <select name="leser_id">
+                <?php foreach ($readers as $r): ?>
+                  <option value="<?php echo (int)$r['leser_id']; ?>" <?php echo $r['leser_id'] == $a['leser_id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($r['vorname'] . ' ' . $r['nachname']); ?></option>
+                <?php endforeach; ?>
+              </select></label><br>
+              <label>Ausleihdatum: <input type="date" name="ausleihdatum" value="<?php echo htmlspecialchars($a['ausleihdatum']); ?>" required></label><br>
+              <label>Rückgabedatum (erwartet): <input type="date" name="rueckgabedatum_soll" value="<?php echo htmlspecialchars($a['rueckgabedatum_soll'] ?? ''); ?>"></label><br>
+              <label>Rückgabedatum (tatsächlich): <input type="date" name="rueckgabedatum_ist" value="<?php echo htmlspecialchars($a['rueckgabedatum_ist'] ?? ''); ?>"></label><br>
+              <label>Status: <select name="status">
+                <option value="ausgeliehen" <?php echo $a['status'] === 'ausgeliehen' ? 'selected' : ''; ?>>ausgeliehen</option>
+                <option value="zurückgegeben" <?php echo $a['status'] === 'zurückgegeben' ? 'selected' : ''; ?>>zurückgegeben</option>
+                <option value="überfällig" <?php echo $a['status'] === 'überfällig' ? 'selected' : ''; ?>>überfällig</option>
+              </select></label><br>
+              <button type="submit">Speichern</button>
+            </form>
+            <form method="post" action="admin.php" style="display:inline;">
+              <input type="hidden" name="action" value="delete_ausleihe">
+              <input type="hidden" name="ausleihe_id" value="<?php echo (int)$a['ausleihe_id']; ?>">
+              <button type="submit" onclick="return confirm('Ausleihe löschen?')">Löschen</button>
             </form>
           </div>
         <?php endforeach; ?>
