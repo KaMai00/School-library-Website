@@ -1,80 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+//header einbinden
+include '../functions/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Noah Schwarz">
-    <link rel="stylesheet" href="../functions/style.css">
-    <title>TFS-Waxenberg Bibliothek</title>
-</head>
+<h1>Bibliothek Startseite</h1>
 
-<body>
+<form method="post" class="search">
+    <input type="text" name="suche" placeholder="Nach Titel suchen..." required>
+    <button>Suchen</button>
+</form>
 
-    <div class="header">
-        <div id="logo">
-            <a href="main.php"><img src="../functions/images/..." alt="logo" /></a>
-        </div>
-        <div id="title">Willkommen zu Bibliotheks Website</div>
-        <div class="menu">
-            <button><a href="admin.php">Verwaltung</a></button>
-            <button><a href="login.php">Login</a></button>
-        </div>
+<?php
+//Datenbankverbindung herstellen
+$conn = new mysqli("localhost", "root", "10032008", "bibliothek_mtsp");
+$conn->set_charset("utf8");
+
+if ($conn->connect_error)
+    die("DB Fehler: " . $conn->connect_error);
+
+//Suchfunktion
+if (isset($_POST['suche'])) {
+    $suche = $conn->real_escape_string($_POST['suche']);
+    echo "<h2>Suchergebnisse:</h2>";
+    $sql = "SELECT * FROM buecher WHERE titel LIKE '%$suche%'";
+} else {
+    echo "<h2>Alle Bücher:</h2>";
+    $sql = "SELECT * FROM buecher ORDER BY titel ASC";
+}
+
+$result = $conn->query($sql);
+?>
+
+<?php
+//Bücher aus der Datenbank anzeigen
+if ($result && $result->num_rows > 0): ?>
+    <div class="books">
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <div class="book">
+                <img src="book-placeholder.png" alt="Buchcover">
+                <div class="book-info">
+                    <h3><?= $row['titel'] ?></h3>
+                    <p>ISBN: <?= $row['isbn'] ?></p>
+                    <p>Verlag: <?= $row['verlag'] ?></p>
+                    <p>Kategorie: <?= $row['kategorie'] ?></p>
+                    <p>Preis: <?= $row['anschaffungspreis'] ?> €</p>
+                    <button>Details</button>
+                </div>
+            </div>
+        <?php endwhile; ?>
     </div>
+<?php else: ?>
+    <p>Keine Bücher gefunden.</p>
+<?php endif; ?>
 
+</main>
 
-    <main>
-        <div class="search">
-            <form method="get" action="main.php">
-                <input type="text" name="q" placeholder="Buch suchen..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
-                <button type="submit">Suchen</button>
-            </form>
-        </div>
-
-        <?php
-        session_start();
-        require __DIR__ . '/../functions/db.php';
-
-        $q = trim((string)($_GET['q'] ?? ''));
-        if ($q !== '') {
-            $term = '%' . $q . '%';
-            // Search in titel, isbn, kategorie, verlag, beschreibung
-            $stmt = $pdo->prepare('SELECT * FROM buecher WHERE titel LIKE :t OR isbn LIKE :t OR kategorie LIKE :t OR verlag LIKE :t OR beschreibung LIKE :t ORDER BY titel');
-            $stmt->execute([':t' => $term]);
-            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            $stmt = $pdo->query('SELECT * FROM buecher ORDER BY titel LIMIT 50');
-            $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
-        if (!$books) {
-            echo '<p>Keine Ergebnisse gefunden.</p>';
-        } else {
-            echo '<div class="books">';
-            foreach ($books as $b) {
-                echo '<div class="book">';
-                echo '<img src="../functions/images/..." alt="book-cover">';
-                echo '<div class="book-info">';
-                echo '<h3>' . htmlspecialchars($b['titel']) . '</h3>';
-                echo '<p>Verlag: ' . htmlspecialchars($b['verlag'] ?? '') . '</p>';
-                echo '<p>Kategorie: ' . htmlspecialchars($b['kategorie'] ?? '') . '</p>';
-                echo '<p>Beschreibung: ' . htmlspecialchars($b['beschreibung'] ?? '') . '</p>';
-                echo '<p>ISBN: ' . htmlspecialchars($b['isbn']) . '</p>';
-                echo '</div></div>';
-            }
-            echo '</div>';
-        }
-        ?>
-    </main>
-
-
-    <footer>
-        <p>© 2025 TFS-Waxenberg Bibliothek. Alle Rechte vorbehalten.</p>
-        <div class="menu">
-            <button><a href="subpages/security-notice.php">Datenschutz</a></button>
-            <button><a href="subpages/impressum.php">impressum</a></button>
-        </div>
-    </footer>
 </body>
 
 </html>
