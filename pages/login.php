@@ -1,4 +1,5 @@
 <?php
+session_start();
 //header einbinden
 include '../functions/header.php'; ?>
 
@@ -10,10 +11,10 @@ $conn->set_charset("utf8");
 $fehler = "";
 //Überprüfen ob Formular abgeschickt wurde
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = $conn->real_escape_string($_POST["email"]);
+    $benutzername = $conn->real_escape_string($_POST["benutzername"]);
     $passwort = hash("sha256", $_POST["passwort"]);
     //SQL Abfrage zum Überprüfen der Anmeldedaten
-    $sql = "SELECT * FROM bibliothekare WHERE email='$email' AND passwort_hash='$passwort'";
+    $sql = "SELECT * FROM bibliothekare WHERE benutzername='$benutzername' AND passwort_hash='$passwort'";
     $result = $conn->query($sql);
     //falls Anmeldedaten korrekt sind
     if ($result->num_rows === 1) {
@@ -39,8 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php endif; ?>
 
 <form method="post" class="login-form">
-    <label>E-Mail</label>
-    <input type="email" name="email" required>
+    <label>Benutzername</label>
+    <input type="text" name="benutzername" required>
 
     <label>Passwort</label>
     <input type="password" name="passwort" required>
