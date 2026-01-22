@@ -107,12 +107,12 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
     <h3>Neues Buch hinzufügen</h3>
 
     <form method="post">
-        <input name="isbn" placeholder="ISBN" required>
-        <input name="titel" placeholder="Titel" required>
+        <input type="text" name="isbn" placeholder="ISBN" required>
+        <input type="text" name="titel" placeholder="Titel" required>
         <textarea name="beschreibung" placeholder="Beschreibung"></textarea>
-        <input name="verlag" placeholder="Verlag">
+        <input type="text" name="verlag" placeholder="Verlag">
         <input type="number" step="0.01" name="preis" placeholder="Anschaffungspreis" required>
-        <input name="kategorie" placeholder="Kategorie">
+        <input type="text" name="kategorie" placeholder="Kategorie">
         <button name="add">+</button>
     </form>
 </div>
@@ -122,13 +122,13 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
         <h3>Buch bearbeiten</h3>
 
         <form method="post">
-            <input name="buch_id" value="<?= $edit_data['buch_id'] ?>" readonly>
-            <input name="isbn" value="<?= $edit_data['isbn'] ?>" readonly>
-            <input name="titel" value="<?= $edit_data['titel'] ?>">
+            <input type="text" name="buch_id" value="<?= $edit_data['buch_id'] ?>" readonly>
+            <input type="text" name="isbn" value="<?= $edit_data['isbn'] ?>" readonly>
+            <input type="text" name="titel" value="<?= $edit_data['titel'] ?>">
             <textarea name="beschreibung"><?= $edit_data['beschreibung'] ?></textarea>
-            <input name="verlag" value="<?= $edit_data['verlag'] ?>">
+            <input type="text" name="verlag" value="<?= $edit_data['verlag'] ?>">
             <input type="number" step="0.01" name="preis" value="<?= $edit_data['anschaffungspreis'] ?>">
-            <input name="kategorie" value="<?= $edit_data['kategorie'] ?>">
+            <input type="text" name="kategorie" value="<?= $edit_data['kategorie'] ?>">
             <button name="update">Speichern</button>
         </form>
     </div>
@@ -137,7 +137,7 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
 <div class="manageBooks">
     <h3>Bücherliste</h3>
 
-    <table>
+    <table class="manageBooksTable">
         <tr>
             <th>Buch ID</th>
             <th>ISBN</th>
@@ -146,6 +146,7 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
             <th>Kategorie</th>
             <th>Preis</th>
             <th>Aktionen</th>
+            <th>Ausleihen</th>
         </tr>
         <?php
         //Bücher aus der Datenbank anzeigen
@@ -157,13 +158,19 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
                 <td><?= $b['verlag'] ?></td>
                 <td><?= $b['kategorie'] ?></td>
                 <td><?= $b['anschaffungspreis'] ?> €</td>
+                <!-- aktionen -->
                 <td>
+                    <!-- bearbeiten -->
                     <a href="?edit=<?= $b['buch_id'] ?>"><button>Bearbeiten</button></a>
+                    <!-- löschen -->
                     <a href="?delete=<?= $b['buch_id'] ?>" onclick="return confirm('Löschen?')"><button
                             class="btn-danger">Löschen</button></a>
 
+                </td>
+                <td>
+
                     <?php
-                    //Prüfen ob Buch ausgeliehen ist
+                    //Prüfen ob Buch ausgeliehen
                     $is_borrowed = $conn->query("SELECT COUNT(*) as count FROM ausleihen WHERE buch_id='{$b['buch_id']}' AND status='ausgeliehen'")->fetch_assoc()['count'] > 0;
                     if (!$is_borrowed): ?>
                         <form method="post" class="inline-form">
@@ -175,6 +182,7 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <!-- ausleihen -->
                             <button name="borrow">Ausleihen</button>
                         </form>
                     <?php endif; ?>
@@ -187,7 +195,7 @@ $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . i
 <div class="manageBooks">
     <h3>Aktive Ausleihen</h3>
 
-    <table>
+    <table class="manageBooksTable">
         <tr>
             <th>Buch</th>
             <th>Leser</th>

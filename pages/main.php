@@ -5,7 +5,7 @@ include '../functions/header.php'; ?>
 <h1>Bibliothek Startseite</h1>
 
 <form method="post" class="search">
-    <input type="text" name="suche" placeholder="Nach Titel suchen..." required>
+    <input type="text" name="suche" placeholder="Nach Titel, Verlag oder Kategorie suchen..." required>
     <button>Suchen</button>
 </form>
 
@@ -21,7 +21,7 @@ if ($conn->connect_error)
 if (isset($_POST['suche'])) {
     $suche = $conn->real_escape_string($_POST['suche']);
     echo "<h2>Suchergebnisse:</h2>";
-    $sql = "SELECT * FROM buecher WHERE titel LIKE '%$suche%'";
+    $sql = "SELECT * FROM buecher WHERE titel LIKE '%$suche%' OR verlag LIKE '%$suche%' OR kategorie LIKE '%$suche%'";
 } else {
     echo "<h2>Alle Bücher:</h2>";
     $sql = "SELECT * FROM buecher ORDER BY titel ASC";
