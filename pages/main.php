@@ -13,9 +13,9 @@ include '../functions/header.php'; ?>
 //Datenbankverbindung herstellen
 $conn = new mysqli("localhost", "root", "10032008", "bibliothek_mtsp");
 $conn->set_charset("utf8");
-
 if ($conn->connect_error)
     die("DB Fehler: " . $conn->connect_error);
+
 
 //Suchfunktion
 if (isset($_POST['suche'])) {
@@ -30,6 +30,7 @@ if (isset($_POST['suche'])) {
 $result = $conn->query($sql);
 ?>
 
+
 <?php
 //Bücher aus der Datenbank anzeigen
 if ($result && $result->num_rows > 0): ?>
@@ -43,7 +44,6 @@ if ($result && $result->num_rows > 0): ?>
                     <p>Verlag: <?= $row['verlag'] ?></p>
                     <p>Kategorie: <?= $row['kategorie'] ?></p>
                     <p>Preis: <?= $row['anschaffungspreis'] ?> €</p>
-                    <button>Details</button>
                 </div>
             </div>
         <?php endwhile; ?>
@@ -51,6 +51,7 @@ if ($result && $result->num_rows > 0): ?>
 <?php else: ?>
     <p>Keine Bücher gefunden.</p>
 <?php endif; ?>
+
 
 </main>
 

@@ -7,8 +7,8 @@ include '../functions/header.php'; ?>
 //Datenbankverbindung herstellen
 $conn = new mysqli("localhost", "root", "10032008", "bibliothek_mtsp");
 $conn->set_charset("utf8");
-
 $fehler = "";
+
 //Überprüfen ob Formular abgeschickt wurde
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $benutzername = $conn->real_escape_string($_POST["benutzername"]);
@@ -16,18 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     //SQL Abfrage zum Überprüfen der Anmeldedaten
     $sql = "SELECT * FROM bibliothekare WHERE benutzername='$benutzername' AND passwort_hash='$passwort'";
     $result = $conn->query($sql);
-    //falls Anmeldedaten korrekt sind
+    //wann korrekt
     if ($result->num_rows === 1) {
         $admin = $result->fetch_assoc();
-        //Session-Variablen setzen
+        //Session Var setzen
         $_SESSION["admin_id"] = $admin["bibliothekar_id"];
         $_SESSION["admin_name"] = $admin["nachname"];
         $_SESSION["admin_vname"] = $admin["vorname"];
-        //Weiterleitung zur Startseite
+        //Weiterleitung Startseite
         header("Location: main.php");
         exit;
     } else {
-        //falls Anmeldedaten falsch sind
+        //falls falsch
         $fehler = "Falsche Anmeldedaten";
     }
 }

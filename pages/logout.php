@@ -1,13 +1,13 @@
 <?php
-//Session starten
+//Session start
 session_start();
 
-//Alle Session-Variablen löschen
+//Session Var löschen
 $_SESSION = [];
 
-//Session zerstören
+//Session end
 session_destroy();
 
-//Weiterleitung zur Startseite nach dem Logout
+//Weiterleitung Startseite
 header("Location: main.php");
 exit;

@@ -195,7 +195,6 @@ label {
 input[type="text"],
 input[type="password"],
 input[type="number"],
-input[type="string"],
 select,
 textarea {
   width: 100%;

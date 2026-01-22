@@ -2,11 +2,13 @@
 session_start();
 //Header einbinden
 include '../functions/header.php';
-//Überprüfen ob Admin eingeloggt ist
+//Überprüfen ob Admin
 if (!isset($_SESSION["admin_id"])) {
+    //sonst weiterleitung login
     header("Location: login.php");
     exit();
 }
+
 //Datenbankverbindung herstellen
 $conn = new mysqli("localhost", "root", "10032008", "bibliothek_mtsp");
 $conn->set_charset("utf8");
@@ -23,7 +25,10 @@ function redirect()
     header("Location: admin.php");
     exit();
 }
+
+
 //Buch hinzufügen oder aktualisieren
+//=============================================================
 if (isset($_POST['add']) || isset($_POST['update'])) {
     $isbn = es($_POST['isbn']);
     $titel = es($_POST['titel']);
@@ -45,14 +50,18 @@ if (isset($_POST['add']) || isset($_POST['update'])) {
     //Seit neu laden
     redirect();
 }
+
 //Buch löschen
+//=============================================================
 if (isset($_GET['delete'])) {
     $buch_id = intval($_GET['delete']);
     $conn->query("DELETE FROM ausleihen WHERE buch_id='$buch_id'");
     $conn->query("DELETE FROM buecher WHERE buch_id='$buch_id'");
     redirect();
 }
+
 //Buch ausleihen
+//=============================================================
 if (isset($_POST['borrow'])) {
     $buch_id = intval($_POST['buch_id']);
     $leser_id = intval($_POST['leser_id']);
@@ -62,7 +71,9 @@ if (isset($_POST['borrow'])) {
                   VALUES ('$buch_id', '$leser_id', '{$_SESSION["admin_id"]}', '$datum', 'ausgeliehen')");
     redirect();
 }
+
 //Buch zurückgeben
+//=============================================================
 if (isset($_GET['return'])) {
     $id = intval($_GET['return']);
     $heute = date("Y-m-d");
@@ -71,7 +82,9 @@ if (isset($_GET['return'])) {
                   WHERE ausleihe_id='$id'");
     redirect();
 }
+
 //Daten für Anzeige abrufen
+//=============================================================
 $buecher = $conn->query("SELECT * FROM buecher ORDER BY titel ASC");
 $leser_list = $conn->query("SELECT * FROM leser ORDER BY vorname ASC")->fetch_all(MYSQLI_ASSOC);
 $ausgeliehen = $conn->query("
@@ -81,7 +94,9 @@ $ausgeliehen = $conn->query("
     JOIN leser l ON a.leser_id = l.leser_id
     WHERE a.status='ausgeliehen'
 ");
+
 //Buch bearbeiten
+//=============================================================
 $edit_id = $_GET['edit'] ?? null;
 $edit_data = $edit_id ? $conn->query("SELECT * FROM buecher WHERE buch_id='" . intval($edit_id) . "'")->fetch_assoc() : null;
 ?>

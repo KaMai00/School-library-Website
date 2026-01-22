@@ -1,4 +1,5 @@
 <?php
+//session starten falls noch nicht
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -26,8 +27,8 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="main.php"><button>Startseite</button></a>
             <a href="admin.php"><button>Bücherverwaltung</button></a>
             <?php if (isset($_SESSION["admin_id"])): ?>
-                <span class="muted">Eingeloggt als: <?= $_SESSION["admin_vname"] . " " . $_SESSION["admin_name"] ?></span>
                 <a href="logout.php"><button>Logout</button></a>
+                <span class="muted"><?= $_SESSION["admin_vname"] . " " . $_SESSION["admin_name"] ?></span>
             <?php else: ?>
                 <a href="login.php"><button>Login</button></a>
             <?php endif; ?>
